@@ -159,11 +159,15 @@ body.white-leds #leds-matrix .item.active {
     padding: 0px;
 }
 
-#invert-button,
+#rotate-button,
 #shift-up-button,
 #shift-right-button,
 #shift-down-button,
-#shift-left-button {
+#shift-left-button,
+#cyclic-shift-right-button,
+#cyclic-shift-down-button,
+#vertical-flip-button,
+#horizontal-flip-button {
     position: absolute;
     height: 30px;
     width: 30px;

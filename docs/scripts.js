@@ -247,13 +247,75 @@ $(function () {
             $(this).toggleClass('active', false);
         } else if (edit_mode == 3) {
             $(this).toggleClass('active');
+        } else {
+            return;
         }
         ledsToHex();
     });
 
-    $('#invert-button').click(function () {
-        $leds.find('.item').toggleClass('active');
-        ledsToHex();
+    $('#rotate-button').click(function () {
+        var pattern = getInputHexValue();
+        var byte_table = [];
+        for (var i = 7; i >= 0; i--) {
+            byte_table.push(parseInt(pattern.substr(2 * i, 2), 16));
+        }
+        var rot = [];
+        for (var i = 0; i < 8; i++) {
+            var byte = 0;
+            for (var j = 0; j < 8; j++) {
+                if (byte_table[7-j] >> i & 1) {
+                    byte |= 1 << j;
+                }
+            }
+            rot.push(('0' + byte.toString(16)).substr(-2));
+        }
+        $hexInput.val(rot.reverse().join(''));
+        hexInputToLeds();
+    });
+
+    $('#horizontal-flip-button').click(function () {
+        var pattern = getInputHexValue();
+        var flip = [];
+        for (var i = 0; i < 8; i++) {
+            var byte = pattern.substr(2 * i, 2);
+            byte = parseInt(byte, 16).toString(2);
+            byte = ('00000000' + byte).substr(-8);
+            byte = byte.split('').reverse().join('');
+            byte = parseInt(byte, 2).toString(16);
+            byte = ('0' + byte).substr(-2);
+            flip.push(byte);
+        }
+        $hexInput.val(flip.join(''));
+        hexInputToLeds();
+    });
+
+    $('#vertical-flip-button').click(function () {
+        var val = getInputHexValue().match(/.{2}/g).reverse().join('');
+        $hexInput.val(val);
+        hexInputToLeds();
+    });
+
+    $('#cyclic-shift-down-button').click(function () {
+        var val = getInputHexValue().substr(2, 14) + getInputHexValue().substr(0, 2);
+        $hexInput.val(val);
+        hexInputToLeds();
+    });
+
+    $('#cyclic-shift-right-button').click(function () {
+        var val = getInputHexValue();
+
+        var out = [];
+        for (var i = 0; i < 8; i++) {
+            var byte = val.substr(i * 2, 2);
+            byte = parseInt(byte, 16);
+            byte = (byte << 1) | (byte >> 7);
+            byte = byte.toString(16);
+            byte = ('0' + byte).substr(-2);
+            out.push(byte);
+        }
+        val = out.join('');
+        $hexInput.val(val);
+        hexInputToLeds();
     });
 
     $('#shift-up-button').click(function () {
