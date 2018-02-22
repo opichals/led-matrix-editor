@@ -385,6 +385,28 @@ $(function () {
         } else if (e.keyCode == 40) {  // arrow down
             $hexInput.val(patternTool.down(getInputHexValue(), e.shiftKey));
             hexInputToLeds();
+        } else if (e.keyCode == 33) {  // page up
+            var $prevFrame = $frames.find('.frame.selected').first().prev('.frame');
+            if ($prevFrame.length) {
+                $hexInput.val($prevFrame.attr('data-hex'));
+                focusToFrame($prevFrame);
+                hexInputToLeds();
+            }
+        } else if (e.keyCode == 34) {  // page down
+            var $nextFrame = $frames.find('.frame.selected').first().next('.frame');
+            if ($nextFrame.length) {
+                $hexInput.val($nextFrame.attr('data-hex'));
+                focusToFrame($nextFrame);
+                hexInputToLeds();
+            }
+        } else if (e.keyCode == 13) {  // enter
+            if (e.ctrlKey) {
+                $updateButton.click();
+            } else {
+                $insertButton.click();
+            }
+        } else if (e.keyCode == 46) {  // delete
+            $deleteButton.click();
         } else {
             return;
         }

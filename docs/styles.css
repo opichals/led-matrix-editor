@@ -11,9 +11,6 @@ body {
     border-spacing: 5px;
     border-collapse: separate;
 }
-#leds-matrix:focus {
-    outline: none;
-}
 
 #leds-matrix .item,
 #cols-list .item,
