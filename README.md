@@ -1,5 +1,5 @@
 # led-matrix-editor
-Forked from (xantorohara/led-matrix-editor)[https://github.com/xantorohara/led-matrix-editor].
+Forked from [xantorohara/led-matrix-editor](https://github.com/xantorohara/led-matrix-editor).
 
 LED matrix 8x8 online editor
 
