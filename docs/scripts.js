@@ -220,8 +220,34 @@ $(function () {
     $rows = $('#rows-list');
     $leds = $('#leds-matrix');
 
-    $leds.find('.item').mousedown(function () {
+    var edit_mode = 0; // 0: none, 1: activate, 2: deactivate, 3: toggle
+
+    $leds.find('.item').mousedown(function (e) {
+        if (e.shiftKey) {
+            edit_mode = 3;
+        } else if ($(this).is(".active")) {
+            edit_mode = 2;
+        } else {
+            edit_mode = 1;
+        }
         $(this).toggleClass('active');
+        ledsToHex();
+    });
+
+    $("#leds-container").mouseleave(function () {
+        edit_mode = 0;
+    }).mouseup(function () {
+        edit_mode = 0;
+    });
+
+    $leds.find('.item').mouseenter(function () {
+        if (edit_mode == 1) {
+            $(this).toggleClass('active', true);
+        } else if (edit_mode == 2) {
+            $(this).toggleClass('active', false);
+        } else if (edit_mode == 3) {
+            $(this).toggleClass('active');
+        }
         ledsToHex();
     });
 
@@ -276,17 +302,25 @@ $(function () {
         hexInputToLeds();
     });
 
-    $cols.find('.item').mousedown(function () {
+    $cols.find('.item').mousedown(function (e) {
         var col = $(this).attr('data-col');
-        $leds.find('.item[data-col=' + col + ']').toggleClass('active',
-            $leds.find('.item[data-col=' + col + '].active').length != 8);
+        if (e.shiftKey) {
+            $leds.find('.item[data-col=' + col + ']').toggleClass('active');
+        } else {
+            $leds.find('.item[data-col=' + col + ']').toggleClass('active',
+                $leds.find('.item[data-col=' + col + '].active').length != 8);
+        }
         ledsToHex();
     });
 
-    $rows.find('.item').mousedown(function () {
+    $rows.find('.item').mousedown(function (e) {
         var row = $(this).attr('data-row');
-        $leds.find('.item[data-row=' + row + ']').toggleClass('active',
-            $leds.find('.item[data-row=' + row + '].active').length != 8);
+        if (e.shiftKey) {
+            $leds.find('.item[data-row=' + row + ']').toggleClass('active');
+        } else {
+            $leds.find('.item[data-row=' + row + ']').toggleClass('active',
+                $leds.find('.item[data-row=' + row + '].active').length != 8);
+        }
         ledsToHex();
     });
 
@@ -353,9 +387,13 @@ $(function () {
         $rows.find('.item').removeClass('hover');
     });
 
-    $('#matrix-toggle').mousedown(function () {
+    $('#matrix-toggle').mousedown(function (e) {
         var col = $(this).attr('data-col');
-        $leds.find('.item').toggleClass('active', $leds.find('.item.active').length != 64);
+        if (e.shiftKey) {
+            $leds.find('.item').toggleClass('active');
+        } else {
+            $leds.find('.item').toggleClass('active', $leds.find('.item.active').length != 64);
+        }
         ledsToHex();
     });
 
