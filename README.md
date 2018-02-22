@@ -3,7 +3,7 @@ Forked from [xantorohara/led-matrix-editor](https://github.com/xantorohara/led-m
 
 LED matrix 8x8 online editor
 
-[LED Matrix Editor](http://xantorohara.github.io/led-matrix-editor) - 
+[LED Matrix Editor](http://worldmaker18349276.github.io/led-matrix-editor) - 
 is online tool for editing and creating animations for LED matrices.
 
 ![Screenshot](resources/led-matrix-editor-new2.png)
