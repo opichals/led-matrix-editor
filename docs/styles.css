@@ -122,13 +122,20 @@ body.white-leds #leds-matrix .item.active {
     height: 25px;
     width: 65px;
     padding: 5px;
+    border: none;
+}
+
+#play-button {
+    width: 35px;
+    padding: 0px;
 }
 
 #hex-input {
+    font-family: "Bitstream Vera Sans Mono", Monaco, "Courier New", Courier, monospace;
     text-align: center;
     width: 150px;
     height: 30px;
-    padding: 5px;
+    padding: 0px;
 }
 
 #edit-buttons-container {
@@ -149,6 +156,7 @@ body.white-leds #leds-matrix .item.active {
     width: 75px;
     height: 30px;
     margin: 0 10px;
+    padding: 0px;
 }
 
 #invert-button,
@@ -161,6 +169,7 @@ body.white-leds #leds-matrix .item.active {
     width: 30px;
     font-size: 15px;
     box-sizing: border-box;
+    padding: 0px;
 }
 
 .leds-case {
