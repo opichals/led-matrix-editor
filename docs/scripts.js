@@ -209,6 +209,7 @@ $(function () {
             $deleteButton.attr('disabled', 'disabled');
             $updateButton.attr('disabled', 'disabled');
         }
+        $leds.focus();
     }
 
     $('#cols-container').append($(generator.tableCols()));
@@ -374,31 +375,74 @@ $(function () {
 
     $leds.keydown(function (e) {
         if (e.keyCode == 39) {  // arrow right
-            $hexInput.val(patternTool.right(getInputHexValue(), e.shiftKey));
-            hexInputToLeds();
-        } else if (e.keyCode == 37) {  // arrow left
-            $hexInput.val(patternTool.left(getInputHexValue(), e.shiftKey));
-            hexInputToLeds();
-        } else if (e.keyCode == 38) {  // arrow up
-            $hexInput.val(patternTool.up(getInputHexValue(), e.shiftKey));
-            hexInputToLeds();
-        } else if (e.keyCode == 40) {  // arrow down
-            $hexInput.val(patternTool.down(getInputHexValue(), e.shiftKey));
-            hexInputToLeds();
-        } else if (e.keyCode == 33) {  // page up
-            var $prevFrame = $frames.find('.frame.selected').first().prev('.frame');
-            if ($prevFrame.length) {
-                $hexInput.val($prevFrame.attr('data-hex'));
-                focusToFrame($prevFrame);
+            if (e.ctrlKey) {
+                $hexInput.val(patternTool.rotate(getInputHexValue()));
                 hexInputToLeds();
+            } else {
+                $hexInput.val(patternTool.right(getInputHexValue(), e.shiftKey));
+                hexInputToLeds();
+            }
+        } else if (e.keyCode == 37) {  // arrow left
+            if (e.ctrlKey) {
+                var val = patternTool.rotate(getInputHexValue());
+                val = patternTool.rotate(val);
+                val = patternTool.rotate(val);
+                $hexInput.val(val);
+                hexInputToLeds();
+            } else {
+                $hexInput.val(patternTool.left(getInputHexValue(), e.shiftKey));
+                hexInputToLeds();
+            }
+        } else if (e.keyCode == 38) {  // arrow up
+            if (e.ctrlKey) {
+                $hexInput.val(patternTool.flipV(getInputHexValue()));
+                hexInputToLeds();
+            } else {
+                $hexInput.val(patternTool.up(getInputHexValue(), e.shiftKey));
+                hexInputToLeds();
+            }
+        } else if (e.keyCode == 40) {  // arrow down
+            if (e.ctrlKey) {
+                $hexInput.val(patternTool.flipV(getInputHexValue()));
+                hexInputToLeds();
+            } else {
+                $hexInput.val(patternTool.down(getInputHexValue(), e.shiftKey));
+                hexInputToLeds();
+            }
+        } else if (e.keyCode == 33) {  // page up
+            if (e.altKey) {
+                var $thisFrame = $frames.find('.frame.selected').first();
+                var $prevFrame = $thisFrame.prev('.frame');
+                if ($prevFrame.length) {
+                    $prevFrame.before($thisFrame);
+                    saveState();
+                }
+            } else {
+                var $prevFrame = $frames.find('.frame.selected').first().prev('.frame');
+                if ($prevFrame.length) {
+                    $hexInput.val($prevFrame.attr('data-hex'));
+                    focusToFrame($prevFrame);
+                    hexInputToLeds();
+                }
             }
         } else if (e.keyCode == 34) {  // page down
-            var $nextFrame = $frames.find('.frame.selected').first().next('.frame');
-            if ($nextFrame.length) {
-                $hexInput.val($nextFrame.attr('data-hex'));
-                focusToFrame($nextFrame);
-                hexInputToLeds();
+            if (e.altKey) {
+                var $thisFrame = $frames.find('.frame.selected').first();
+                var $nextFrame = $thisFrame.next('.frame');
+                if ($nextFrame.length) {
+                    $nextFrame.after($thisFrame);
+                    saveState();
+                }
+            } else {
+                var $nextFrame = $frames.find('.frame.selected').first().next('.frame');
+                if ($nextFrame.length) {
+                    $hexInput.val($nextFrame.attr('data-hex'));
+                    focusToFrame($nextFrame);
+                    hexInputToLeds();
+                }
             }
+        } else if (e.keyCode == 32) {  // space
+            $("#play-button").click();
         } else if (e.keyCode == 13) {  // enter
             if (e.ctrlKey) {
                 $updateButton.click();
@@ -591,4 +635,5 @@ $(function () {
 
     setPageTheme(pageTheme);
 
+    $leds.focus();
 });
