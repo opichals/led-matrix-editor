@@ -389,30 +389,6 @@ $(function () {
         hexInputToLeds();
     });
 
-    $('#horizontal-flip-button').click(function () {
-        cachePattern();
-        $hexInput.val(patternTool.flipH(getInputHexValue()));
-        hexInputToLeds();
-    });
-
-    $('#vertical-flip-button').click(function () {
-        cachePattern();
-        $hexInput.val(patternTool.flipV(getInputHexValue()));
-        hexInputToLeds();
-    });
-
-    $('#cyclic-shift-down-button').click(function () {
-        cachePattern();
-        $hexInput.val(patternTool.down(getInputHexValue(), true));
-        hexInputToLeds();
-    });
-
-    $('#cyclic-shift-right-button').click(function () {
-        cachePattern();
-        $hexInput.val(patternTool.right(getInputHexValue(), true));
-        hexInputToLeds();
-    });
-
     $('#shift-up-button').click(function () {
         cachePattern();
         $hexInput.val(patternTool.up(getInputHexValue()));
