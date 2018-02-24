@@ -2,6 +2,7 @@ $(function () {
     var $body = $('body');
     var $frames = $('#frames');
     var $hexInput = $('#hex-input');
+    var $importButton = $('#import-button');
     var $insertButton = $('#insert-button');
     var $deleteButton = $('#delete-button');
     var $updateButton = $('#update-button');
@@ -223,6 +224,7 @@ $(function () {
     var edit_mode = 0; // 0: none, 1: activate, 2: deactivate, 3: toggle
 
     $leds.find('.item').mousedown(function (e) {
+        cachePattern();
         if (e.shiftKey) {
             edit_mode = 3;
         } else if ($(this).is(".active")) {
@@ -254,7 +256,7 @@ $(function () {
     });
 
     var patternTool = {
-        rotate: function (pattern) {
+        rotate: function (pattern, direction) {
             var byte_table = [];
             for (var i = 7; i >= 0; i--) {
                 byte_table.push(parseInt(pattern.substr(2 * i, 2), 16));
@@ -263,8 +265,14 @@ $(function () {
             for (var i = 0; i < 8; i++) {
                 var byte = 0;
                 for (var j = 0; j < 8; j++) {
-                    if (byte_table[7-j] >> i & 1) {
-                        byte |= 1 << j;
+                    if (direction) {
+                        if (byte_table[7-j] >> i & 1) {
+                            byte |= 1 << j;
+                        }
+                    } else {
+                        if (byte_table[j] >> (7-i) & 1) {
+                            byte |= 1 << j;
+                        }
                     }
                 }
                 rot.push(('0' + byte.toString(16)).substr(-2));
@@ -324,76 +332,141 @@ $(function () {
                 out.push(byte);
             }
             return out.join('');
+        },
+        not: function (pattern) {
+            var out = [];
+            for (var i = 0; i < 8; i++) {
+                var byte = pattern.substr(i * 2, 2);
+                byte = ~parseInt(byte, 16);
+                byte = byte.toString(16);
+                byte = ('0' + byte).substr(-2);
+                out.push(byte);
+            }
+            return out.join('');
+        },
+        or: function (pattern1, pattern2) {
+            var out = [];
+            for (var i = 0; i < 8; i++) {
+                var byte1 = pattern1.substr(i * 2, 2);
+                var byte2 = pattern2.substr(i * 2, 2);
+                var byte = parseInt(byte1, 16) | parseInt(byte2, 16);
+                byte = byte.toString(16);
+                byte = ('0' + byte).substr(-2);
+                out.push(byte);
+            }
+            return out.join('');
+        },
+        xor: function (pattern1, pattern2) {
+            var out = [];
+            for (var i = 0; i < 8; i++) {
+                var byte1 = pattern1.substr(i * 2, 2);
+                var byte2 = pattern2.substr(i * 2, 2);
+                var byte = parseInt(byte1, 16) ^ parseInt(byte2, 16);
+                byte = byte.toString(16);
+                byte = ('0' + byte).substr(-2);
+                out.push(byte);
+            }
+            return out.join('');
+        },
+        and: function (pattern1, pattern2) {
+            var out = [];
+            for (var i = 0; i < 8; i++) {
+                var byte1 = pattern1.substr(i * 2, 2);
+                var byte2 = pattern2.substr(i * 2, 2);
+                var byte = parseInt(byte1, 16) & parseInt(byte2, 16);
+                byte = byte.toString(16);
+                byte = ('0' + byte).substr(-2);
+                out.push(byte);
+            }
+            return out.join('');
         }
     }
 
 
     $('#rotate-button').click(function () {
-        $hexInput.val(patternTool.rotate(getInputHexValue()));
+        cachePattern();
+        $hexInput.val(patternTool.rotate(getInputHexValue(), true));
         hexInputToLeds();
     });
 
     $('#horizontal-flip-button').click(function () {
+        cachePattern();
         $hexInput.val(patternTool.flipH(getInputHexValue()));
         hexInputToLeds();
     });
 
     $('#vertical-flip-button').click(function () {
+        cachePattern();
         $hexInput.val(patternTool.flipV(getInputHexValue()));
         hexInputToLeds();
     });
 
     $('#cyclic-shift-down-button').click(function () {
+        cachePattern();
         $hexInput.val(patternTool.down(getInputHexValue(), true));
         hexInputToLeds();
     });
 
     $('#cyclic-shift-right-button').click(function () {
+        cachePattern();
         $hexInput.val(patternTool.right(getInputHexValue(), true));
         hexInputToLeds();
     });
 
     $('#shift-up-button').click(function () {
+        cachePattern();
         $hexInput.val(patternTool.up(getInputHexValue()));
         hexInputToLeds();
     });
 
     $('#shift-down-button').click(function () {
+        cachePattern();
         $hexInput.val(patternTool.down(getInputHexValue()));
         hexInputToLeds();
     });
 
     $('#shift-right-button').click(function () {
+        cachePattern();
         $hexInput.val(patternTool.right(getInputHexValue()));
         hexInputToLeds();
     });
 
     $('#shift-left-button').click(function () {
+        cachePattern();
         $hexInput.val(patternTool.left(getInputHexValue()));
         hexInputToLeds();
     });
 
+    var patternClipboard = 0;
+    var patternHistory = [];
+    function cachePattern() {
+        patternHistory.push($hexInput.val());
+        while (patternHistory.length > 50) {
+            patternHistory.shift();
+        }
+    }
+
     $leds.keydown(function (e) {
         if (e.keyCode == 39) {  // arrow right
+            cachePattern();
             if (e.ctrlKey) {
-                $hexInput.val(patternTool.rotate(getInputHexValue()));
+                $hexInput.val(patternTool.rotate(getInputHexValue(), true));
                 hexInputToLeds();
             } else {
                 $hexInput.val(patternTool.right(getInputHexValue(), e.shiftKey));
                 hexInputToLeds();
             }
         } else if (e.keyCode == 37) {  // arrow left
+            cachePattern();
             if (e.ctrlKey) {
-                var val = patternTool.rotate(getInputHexValue());
-                val = patternTool.rotate(val);
-                val = patternTool.rotate(val);
-                $hexInput.val(val);
+                $hexInput.val(patternTool.rotate(getInputHexValue(), false));
                 hexInputToLeds();
             } else {
                 $hexInput.val(patternTool.left(getInputHexValue(), e.shiftKey));
                 hexInputToLeds();
             }
         } else if (e.keyCode == 38) {  // arrow up
+            cachePattern();
             if (e.ctrlKey) {
                 $hexInput.val(patternTool.flipV(getInputHexValue()));
                 hexInputToLeds();
@@ -402,6 +475,7 @@ $(function () {
                 hexInputToLeds();
             }
         } else if (e.keyCode == 40) {  // arrow down
+            cachePattern();
             if (e.ctrlKey) {
                 $hexInput.val(patternTool.flipV(getInputHexValue()));
                 hexInputToLeds();
@@ -409,6 +483,21 @@ $(function () {
                 $hexInput.val(patternTool.down(getInputHexValue(), e.shiftKey));
                 hexInputToLeds();
             }
+        } else if (e.keyCode == 67 && e.ctrlKey) {  // Ctrl-C
+            patternClipboard = getInputHexValue();
+        } else if (e.keyCode == 86 && e.ctrlKey) {  // Ctrl-V
+            cachePattern();
+            var val;
+            if (e.shiftKey) {
+                val = patternTool.xor(getInputHexValue(), patternClipboard);
+            } else {
+                val = patternTool.or(getInputHexValue(), patternClipboard);
+            }
+            $hexInput.val(val);
+            hexInputToLeds();
+        } else if (e.keyCode == 90 && e.ctrlKey) {  // Ctrl-Z
+            $hexInput.val(patternHistory.pop());
+            hexInputToLeds();
         } else if (e.keyCode == 33) {  // page up
             if (e.altKey) {
                 var $thisFrame = $frames.find('.frame.selected').first();
@@ -458,6 +547,7 @@ $(function () {
     });
 
     $cols.find('.item').mousedown(function (e) {
+        cachePattern();
         var col = $(this).attr('data-col');
         if (e.shiftKey) {
             $leds.find('.item[data-col=' + col + ']').toggleClass('active');
@@ -469,6 +559,7 @@ $(function () {
     });
 
     $rows.find('.item').mousedown(function (e) {
+        cachePattern();
         var row = $(this).attr('data-row');
         if (e.shiftKey) {
             $leds.find('.item[data-row=' + row + ']').toggleClass('active');
@@ -480,6 +571,7 @@ $(function () {
     });
 
     $hexInput.keyup(function () {
+        cachePattern();
         hexInputToLeds();
     });
 
@@ -531,6 +623,27 @@ $(function () {
         saveState();
     });
 
+    $importButton.click(function () {
+        var url = prompt("input hashtag:");
+        if (url) {
+            url = /[^#]*$/g.exec(url)[0];
+            var regex = /[0-9a-fA-F]+/g;
+            var match;
+            var $currentFrame = $frames.find('.frame.selected').first();
+            do {
+                match = regex.exec(url);
+                if ($currentFrame.length) {
+                    $currentFrame = makeFrameElement(match[0]).insertAfter($currentFrame);
+                } else {
+                    $currentFrame = makeFrameElement(match[0]).appendTo($frames);
+                }
+            } while (match);
+
+            focusToFrame($currentFrame);
+            saveState();
+        }
+    });
+
     $('#images-as-byte-arrays').change(function () {
         var patterns = framesToPatterns();
         printArduinoCode(patterns);
@@ -546,6 +659,7 @@ $(function () {
     });
 
     $('#matrix-toggle').mousedown(function (e) {
+        cachePattern();
         var col = $(this).attr('data-col');
         if (e.shiftKey) {
             $leds.find('.item').toggleClass('active');

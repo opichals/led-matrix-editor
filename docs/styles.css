@@ -150,12 +150,13 @@ body.white-leds #leds-matrix .item.active {
     height: 130px;
 }
 
+#import-button,
 #insert-button,
 #update-button,
 #delete-button {
-    width: 75px;
+    width: 60px;
     height: 30px;
-    margin: 0 10px;
+    margin: 0 5px;
     padding: 0px;
 }
 
