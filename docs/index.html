@@ -489,7 +489,7 @@ $(function () {
     $rows = $('#rows-list');
     $leds = $('#leds-matrix');
 
-    var edit_mode = 0; // 0: none, 1: activate, 2: deactivate, 3: toggle
+    var edit_mode = 0;
 
     $leds.find('.item').mousedown(function (e) {
         cachePattern();
@@ -690,7 +690,7 @@ $(function () {
     }
 
     $leds.keydown(function (e) {
-        if (e.keyCode == 39) {  // arrow right
+        if (e.keyCode == 39) {
             cachePattern();
             if (e.ctrlKey) {
                 $hexInput.val(patternTool.rotate(getInputHexValue(), true));
@@ -699,7 +699,7 @@ $(function () {
                 $hexInput.val(patternTool.right(getInputHexValue(), e.shiftKey));
                 hexInputToLeds();
             }
-        } else if (e.keyCode == 37) {  // arrow left
+        } else if (e.keyCode == 37) {
             cachePattern();
             if (e.ctrlKey) {
                 $hexInput.val(patternTool.rotate(getInputHexValue(), false));
@@ -708,7 +708,7 @@ $(function () {
                 $hexInput.val(patternTool.left(getInputHexValue(), e.shiftKey));
                 hexInputToLeds();
             }
-        } else if (e.keyCode == 38) {  // arrow up
+        } else if (e.keyCode == 38) {
             cachePattern();
             if (e.ctrlKey) {
                 $hexInput.val(patternTool.flipV(getInputHexValue()));
@@ -717,7 +717,7 @@ $(function () {
                 $hexInput.val(patternTool.up(getInputHexValue(), e.shiftKey));
                 hexInputToLeds();
             }
-        } else if (e.keyCode == 40) {  // arrow down
+        } else if (e.keyCode == 40) {
             cachePattern();
             if (e.ctrlKey) {
                 $hexInput.val(patternTool.flipV(getInputHexValue()));
@@ -726,9 +726,9 @@ $(function () {
                 $hexInput.val(patternTool.down(getInputHexValue(), e.shiftKey));
                 hexInputToLeds();
             }
-        } else if (e.keyCode == 67 && e.ctrlKey) {  // Ctrl-C
+        } else if (e.keyCode == 67 && e.ctrlKey) {
             patternClipboard = getInputHexValue();
-        } else if (e.keyCode == 86 && e.ctrlKey) {  // Ctrl-V
+        } else if (e.keyCode == 86 && e.ctrlKey) {
             cachePattern();
             var val;
             if (e.shiftKey) {
@@ -738,10 +738,10 @@ $(function () {
             }
             $hexInput.val(val);
             hexInputToLeds();
-        } else if (e.keyCode == 90 && e.ctrlKey) {  // Ctrl-Z
+        } else if (e.keyCode == 90 && e.ctrlKey) {
             $hexInput.val(patternHistory.pop());
             hexInputToLeds();
-        } else if (e.keyCode == 33) {  // page up
+        } else if (e.keyCode == 33) {
             if (e.altKey) {
                 var $thisFrame = $frames.find('.frame.selected').first();
                 var $prevFrame = $thisFrame.prev('.frame');
@@ -757,7 +757,7 @@ $(function () {
                     hexInputToLeds();
                 }
             }
-        } else if (e.keyCode == 34) {  // page down
+        } else if (e.keyCode == 34) {
             if (e.altKey) {
                 var $thisFrame = $frames.find('.frame.selected').first();
                 var $nextFrame = $thisFrame.next('.frame');
@@ -773,15 +773,15 @@ $(function () {
                     hexInputToLeds();
                 }
             }
-        } else if (e.keyCode == 32) {  // space
+        } else if (e.keyCode == 32) {
             $("#play-button").click();
-        } else if (e.keyCode == 13) {  // enter
+        } else if (e.keyCode == 13) {
             if (e.ctrlKey) {
                 $updateButton.click();
             } else {
                 $insertButton.click();
             }
-        } else if (e.keyCode == 46) {  // delete
+        } else if (e.keyCode == 46) {
             $deleteButton.click();
         } else {
             return;
