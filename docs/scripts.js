@@ -380,7 +380,7 @@ $(function () {
             }
             return out.join('');
         }
-    }
+    };
 
 
     $('#rotate-button').click(function () {
