@@ -225,15 +225,6 @@ body.white-leds #leds-matrix .item.active {
     box-shadow: 0 0 1px #cccccc;
 }
 
-#circuit-theme {
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    cursor: pointer;
-    background-image: url('img/circuit-icon.png');
-    margin-left: 25px;
-}
-
 #frames {
     padding: 5px;
     height: 200px;
@@ -271,41 +262,6 @@ body.white-leds #leds-matrix .item.active {
     padding: 5px;
     height: 280px;
     overflow-y: scroll;
-}
-
-/*Themes*/
-
-.circuit-theme #circuit {
-    background-image: url('img/circuit.jpg');
-    padding: 5px;
-}
-
-.circuit-theme #matrix {
-    color: white;
-    border: solid 1px #547eae;
-    background-color: #26477a;
-    box-shadow: 10px 10px 10px #333;
-    margin: 10px;
-}
-
-.circuit-theme #leds-container {
-    border: solid 1px #808080;
-}
-
-.circuit-theme #player,
-.circuit-theme #shift-buttons-container,
-.circuit-theme #edit-buttons-container {
-    background-color: #26477a;
-    border: solid 1px #547eae;
-    box-shadow: 10px 10px 10px #333;
-
-}
-
-.circuit-theme #player label,
-.circuit-theme #ms,
-.circuit-theme #shift-buttons-container label,
-.circuit-theme #edit-buttons-container label {
-    color: white;
 }
     </style>
 
@@ -957,16 +913,6 @@ $(function () {
         ledsToHex();
     });
 
-    $('#circuit-theme').click(function () {
-        if ($body.hasClass('circuit-theme')) {
-            $body.removeClass('circuit-theme');
-            Cookies.set('page-theme', 'plain-theme', {path: ''});
-        } else {
-            $body.addClass('circuit-theme');
-            Cookies.set('page-theme', 'circuit-theme', {path: ''});
-        }
-    });
-
     $('.leds-case').click(function () {
         var themeName = $(this).attr('data-leds-theme');
         setLedsTheme(themeName);
@@ -975,10 +921,6 @@ $(function () {
 
     function setLedsTheme(themeName) {
         $body.removeClass('red-leds yellow-leds green-leds blue-leds white-leds').addClass(themeName);
-    }
-
-    function setPageTheme(themeName) {
-        $body.removeClass('plain-theme circuit-theme').addClass(themeName);
     }
 
     var playInterval;
@@ -1033,10 +975,6 @@ $(function () {
         setLedsTheme(ledsTheme);
     }
 
-    var pageTheme = Cookies.get('page-theme') || 'circuit-theme';
-
-    setPageTheme(pageTheme);
-
     $leds.focus();
 });
     </script>
@@ -1068,7 +1006,6 @@ $(function () {
             <div id="green-leds-case" class="leds-case" data-leds-theme="green-leds"></div>
             <div id="blue-leds-case" class="leds-case" data-leds-theme="blue-leds"></div>
             <div id="white-leds-case" class="leds-case" data-leds-theme="white-leds"></div>
-            <div id="circuit-theme" title="Switch matrix theme"></div>
         </div>
         <p class="navbar-text pull-right small">
             Select LEDs color <span class="glyphicon glyphicon-hand-right"></span>
